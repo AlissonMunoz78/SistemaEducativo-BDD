@@ -2,6 +2,9 @@
 -- Trigger 1: Auditoría para cambios en calificaciones
 -- Cumple con: Auditoría con tabla de log, Registro histórico de cambios relevantes
 -- -----------------------------------------------------------------------------------
+USE SistemaEducativo;
+GO
+
 CREATE OR ALTER TRIGGER tr_AuditoriaCalificaciones
 ON Calificaciones
 AFTER UPDATE

@@ -2,6 +2,8 @@
 -- Creación de índices para optimización
 -- Cumple con: Índices simples y compuestos para campos clave
 -- -----------------------------------------------------------------------------------
+USE SistemaEducativo;
+GO
 
 -- Índices para tablas principales
 CREATE INDEX idx_Estudiantes_Cedula ON Estudiantes(cedula);

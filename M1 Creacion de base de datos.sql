@@ -2,12 +2,13 @@
 -- Script de creación de base de datos y tablas para Sistema de Gestión Educativa
 -- Modelo en 3FN para SQL Server
 -- -----------------------------------------------------------------------------------
-
 CREATE DATABASE SistemaEducativo;
 GO
 
 USE SistemaEducativo;
 GO
+
+
 
 -- Tabla de Instituciones educativas
 CREATE TABLE Instituciones (
@@ -50,11 +51,88 @@ CREATE TABLE Responsables (
 
 -- Tabla de relación Estudiante-Responsable
 CREATE TABLE Estudiante_Responsable (
-    estudiante_id INT NOT NULL FOREIGN KEY REFERENCES Estudiantes(estudiante_id),
-    responsable_id INT NOT NULL FOREIGN KEY REFERENCES Responsables(responsable_id),
-    PRIMARY KEY (estudiante_id, responsable_id)
+    estudiante_id INT NOT NULL,
+    responsable_id INT NOT NULL,
+    fecha_asignacion DATETIME DEFAULT GETDATE(),
+    CONSTRAINT PK_Estudiante_Responsable PRIMARY KEY (estudiante_id, responsable_id),
+    CONSTRAINT FK_Estudiante FOREIGN KEY (estudiante_id) REFERENCES Estudiantes(estudiante_id),
+    CONSTRAINT FK_Responsable FOREIGN KEY (responsable_id) REFERENCES Responsables(responsable_id)
 );
+PRINT 'Tabla recreada exitosamente';
+GO
 
+BEGIN TRY
+    BEGIN TRANSACTION;
+    
+    -- Verificación crítica de datos fuente
+    DECLARE @EstudiantesDisponibles INT = (SELECT COUNT(*) FROM Estudiantes);
+    DECLARE @ResponsablesDisponibles INT = (SELECT COUNT(*) FROM Responsables);
+    
+    IF @EstudiantesDisponibles = 0 OR @ResponsablesDisponibles < 2
+    BEGIN
+        RAISERROR('Datos insuficientes: Se requieren estudiantes y al menos 2 responsables', 16, 1);
+    END
+    
+    -- Inserción directa con JOIN (método más confiable)
+    INSERT INTO Estudiante_Responsable (estudiante_id, responsable_id)
+    SELECT 
+        e.estudiante_id,
+        r.responsable_id
+    FROM 
+        (SELECT estudiante_id, ROW_NUMBER() OVER (ORDER BY estudiante_id) AS rn FROM Estudiantes) e
+    JOIN 
+        (SELECT responsable_id, ROW_NUMBER() OVER (ORDER BY responsable_id) AS rn FROM Responsables) r
+    ON 
+        r.rn BETWEEN (e.rn*2)-1 AND (e.rn*2)
+    WHERE 
+        e.estudiante_id <= 150;
+    
+    -- Verificación post-inserción
+    DECLARE @RegistrosInsertados INT = @@ROWCOUNT;
+    
+    IF @RegistrosInsertados = 0
+    BEGIN
+        RAISERROR('No se insertaron registros - Verifique coincidencia de IDs', 16, 1);
+    END
+    
+    COMMIT TRANSACTION;
+    
+    PRINT CONCAT('Inserción exitosa: ', @RegistrosInsertados, ' relaciones creadas');
+    
+    -- Mostrar resumen
+    SELECT 
+        @RegistrosInsertados AS Relaciones_Creadas,
+        COUNT(DISTINCT estudiante_id) AS Estudiantes_Asignados,
+        COUNT(DISTINCT responsable_id) AS Responsables_Utilizados
+    FROM Estudiante_Responsable;
+END TRY
+BEGIN CATCH
+    ROLLBACK TRANSACTION;
+    
+    PRINT 'ERROR: ' + ERROR_MESSAGE();
+    PRINT 'Detalles:';
+    
+    -- Diagnóstico avanzado
+    IF NOT EXISTS (SELECT 1 FROM Estudiantes WHERE estudiante_id <= 150)
+        PRINT '- No hay estudiantes con ID <= 150';
+    
+    IF (SELECT COUNT(*) FROM Responsables) < 300
+        PRINT '- Insuficientes responsables (se necesitan al menos 300)';
+    
+    IF EXISTS (
+        SELECT 1 
+        FROM Estudiantes e 
+        CROSS JOIN (SELECT TOP 2 responsable_id FROM Responsables ORDER BY responsable_id) r
+        WHERE NOT EXISTS (
+            SELECT 1 
+            FROM Responsables 
+            WHERE responsable_id = r.responsable_id
+        )
+    )
+        PRINT '- Existen inconsistencias en las claves foráneas';
+END CATCH;
+GO
+    
 -- Tabla de Docentes
 CREATE TABLE Docentes (
     docente_id INT PRIMARY KEY IDENTITY(1,1),

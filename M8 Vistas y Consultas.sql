@@ -2,6 +2,8 @@
 -- Vistas y consultas frecuentes
 -- Cumple con: Joins, reportes complejos
 -- -----------------------------------------------------------------------------------
+USE SistemaEducativo;
+GO
 
 -- Vista 1: Reporte de calificaciones por estudiante
 CREATE OR ALTER VIEW v_ReporteCalificaciones AS

@@ -2,6 +2,8 @@
 -- Configuración de seguridad y roles
 -- Cumple con: Creación de roles personalizados, gestión de privilegios
 -- -----------------------------------------------------------------------------------
+USE SistemaEducativo;
+GO
 
 -- Crear roles
 CREATE ROLE rol_administrador;

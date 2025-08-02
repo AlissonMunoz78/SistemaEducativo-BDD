@@ -2,6 +2,9 @@
 -- Función 1: Calcular edad a partir de fecha de nacimiento
 -- Cumple con: Funciones que devuelven edad, duración, porcentajes o indicadores
 -- -----------------------------------------------------------------------------------
+USE SistemaEducativo;
+GO
+
 CREATE OR ALTER FUNCTION fn_CalcularEdad(@fecha_nacimiento DATE)
 RETURNS INT
 AS
