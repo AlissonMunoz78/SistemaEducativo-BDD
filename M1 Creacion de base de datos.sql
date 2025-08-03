@@ -209,15 +209,22 @@ CREATE TABLE Calificaciones (
     UNIQUE (estudiante_id, materia_id, periodo)
 );
 
--- Tabla de Auditoría
-CREATE TABLE Log_Auditoria (
+-- TABLA PRINCIPAL DE AUDITORÍA (log_acciones)
+CREATE TABLE log_acciones (
     log_id INT PRIMARY KEY IDENTITY(1,1),
     usuario VARCHAR(100) NOT NULL,
     ip VARCHAR(50) NOT NULL,
     fecha DATETIME NOT NULL DEFAULT GETDATE(),
     accion VARCHAR(20) NOT NULL,
-    tabla_afectada VARCHAR(50) NOT NULL,
-    id_afectado INT,
-    datos_anteriores VARCHAR(MAX),
-    datos_nuevos VARCHAR(MAX)
+    tabla VARCHAR(50) NOT NULL,
+    id_afectado VARCHAR(100) NULL,
+    rol_activo VARCHAR(50) NOT NULL,
+    terminal VARCHAR(50) NULL,
+    transaccion_id VARCHAR(100) NULL,
+    datos_anteriores NVARCHAR(MAX) NULL,
+    datos_nuevos NVARCHAR(MAX) NULL,
+    hash_anterior VARCHAR(64) NULL,
+    hash_nuevo VARCHAR(64) NULL,
+    aplicacion VARCHAR(100) NULL
 );
+GO

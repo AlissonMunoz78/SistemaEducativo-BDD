@@ -218,3 +218,13 @@ BEGIN
     END
 END;
 GO
+
+
+SELECT 
+    name AS TriggerName,
+    OBJECT_NAME(parent_id) AS TableName,
+    OBJECT_DEFINITION(object_id) AS TriggerDefinition,
+    create_date,
+    modify_date
+FROM sys.triggers
+WHERE type = 'TR';
