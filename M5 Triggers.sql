@@ -1,12 +1,8 @@
--- -----------------------------------------------------------------------------------
--- Trigger 1: Auditoría para cambios en calificaciones
--- Cumple con: Auditoría con tabla de log, Registro histórico de cambios relevantes
--- -----------------------------------------------------------------------------------
 USE SistemaEducativo;
 GO
 
 -- -----------------------------------------------------------------------------------
--- Trigger 1 CORREGIDO: Auditoría para cambios en calificaciones
+-- Trigger 1: Auditoría para cambios en calificaciones
 -- -----------------------------------------------------------------------------------
 CREATE OR ALTER TRIGGER tr_AuditoriaCalificaciones
 ON Calificaciones
@@ -64,7 +60,7 @@ END;
 GO
 
 -- -----------------------------------------------------------------------------------
--- Trigger 2 CORREGIDO: Validación de asignación docente-materia
+-- Trigger 2: Validación de asignación docente-materia
 -- -----------------------------------------------------------------------------------
 CREATE OR ALTER TRIGGER tr_ValidarAsignacionDocente
 ON Docente_Materia
@@ -133,7 +129,7 @@ END;
 GO
 
 -- -----------------------------------------------------------------------------------
--- Trigger 3 CORREGIDO: Notificación de cambios en datos de estudiantes
+-- Trigger 3 : Notificación de cambios en datos de estudiantes
 -- -----------------------------------------------------------------------------------
 CREATE OR ALTER TRIGGER tr_NotificarCambiosEstudiante
 ON Estudiantes

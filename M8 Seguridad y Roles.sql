@@ -1,20 +1,7 @@
 -- -----------------------------------------------------------------------------------
--- Configuración de seguridad y roles (Versión Completa)
+-- Configuración de seguridad y roles 
 -- -----------------------------------------------------------------------------------
 USE SistemaEducativo;
-GO
-
--- Eliminar roles existentes si es necesario (para evitar errores)
-IF EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'rol_administrador' AND type = 'R')
-    DROP ROLE rol_administrador;
-IF EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'rol_docente' AND type = 'R')
-    DROP ROLE rol_docente;
-IF EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'rol_estudiante' AND type = 'R')
-    DROP ROLE rol_estudiante;
-IF EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'rol_responsable' AND type = 'R')
-    DROP ROLE rol_responsable;
-IF EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'rol_auditor' AND type = 'R')
-    DROP ROLE rol_auditor;
 GO
 
 -- Crear roles
@@ -25,7 +12,7 @@ CREATE ROLE rol_responsable;
 CREATE ROLE rol_auditor;
 GO
 
--- 1. Permisos para rol_administrador (acceso completo)
+-- 1. Permisos para rol_administrador
 GRANT CONTROL ON SCHEMA::dbo TO rol_administrador;
 GRANT EXECUTE ON SCHEMA::dbo TO rol_administrador;
 GO
@@ -42,7 +29,7 @@ GRANT SELECT ON v_ReporteCalificaciones TO rol_docente;
 GRANT SELECT ON v_AsistenciasEstudiantes TO rol_docente;
 GO
 
--- 3. Permisos para rol_estudiante (solo consulta propia)
+-- 3. Permisos para rol_estudiante
 -- Primero creamos las vistas específicas para estudiantes
 IF NOT EXISTS (SELECT 1 FROM sys.views WHERE name = 'v_EstudianteDatosPropios')
 EXEC('
@@ -81,7 +68,7 @@ GRANT SELECT ON v_EstudianteCalificaciones TO rol_estudiante;
 GRANT SELECT ON v_EstudianteAsistencias TO rol_estudiante;
 GO
 
--- 4. Permisos para rol_responsable (solo consulta de sus estudiantes)
+-- 4. Permisos para rol_responsable
 -- Creamos vistas específicas para responsables
 IF NOT EXISTS (SELECT 1 FROM sys.views WHERE name = 'v_ResponsableDatosEstudiantes')
 EXEC('
@@ -129,7 +116,7 @@ GRANT SELECT ON v_ResponsableCalificaciones TO rol_responsable;
 GRANT SELECT ON v_ResponsableAsistencias TO rol_responsable;
 GO
 
--- 5. Permisos para rol_auditor (solo lectura y logs)
+-- 5. Permisos para rol_auditor
 GRANT SELECT ON SCHEMA::dbo TO rol_auditor;
 GRANT SELECT ON Log_Auditoria TO rol_auditor;
 DENY INSERT, UPDATE, DELETE ON SCHEMA::dbo TO rol_auditor;

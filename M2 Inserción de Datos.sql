@@ -19,7 +19,6 @@ VALUES
 INSERT INTO Estudiantes (cedula, nombres, apellidos, fecha_nacimiento, genero, direccion, telefono, email, institucion_id)
 VALUES 
 -- Institución 1 (50 estudiantes)
--- Institución 1 (50 estudiantes)
 ('1750012345', 'Juan Carlos', 'Pérez González', '2005-03-15', 'M', 'Calle 123, Quito', '0987654321', 'juan.perez@email.com', 1),
 ('1750012346', 'María José', 'López Martínez', '2005-07-22', 'F', 'Av. Principal 456, Quito', '0987654322', 'maria.lopez@email.com', 1),
 ('1750012347', 'Carlos Andrés', 'García Ruiz', '2006-01-10', 'M', 'Calle 789, Quito', '0987654323', 'carlos.garcia@email.com', 1),
@@ -342,12 +341,6 @@ SELECT estudiante_id, nombres, apellidos
 FROM Estudiantes 
 WHERE institucion_id = 1
 ORDER BY estudiante_id;
-
--- Ver responsables correspondientes
-SELECT responsable_id, nombres, apellidos 
-FROM Responsables 
-WHERE responsable_id = 1
-ORDER BY responsable_id;
 
 
 
@@ -1642,19 +1635,6 @@ VALUES
 -- VISUALIZACIONES
 -- -----------------------------------------------------------------------------------
 
--- Ver estudiantes de la institución 3
-SELECT estudiante_id, nombres, apellidos 
-FROM Estudiantes 
-WHERE institucion_id = 1
-ORDER BY estudiante_id;
-
--- Ver responsables correspondientes
-SELECT responsable_id, nombres, apellidos 
-FROM Responsables 
-WHERE responsable_id = 1
-ORDER BY responsable_id;
-
-
 
 
 -- Verificación del total de registros
@@ -1673,5 +1653,5 @@ SELECT @total_registros =
     (SELECT COUNT(*) FROM Calificaciones);
     
 PRINT CONCAT('Total de registros insertados: ', @total_registros);
--- Debería mostrar: Total de registros insertados: 500+
+
 

@@ -1,7 +1,6 @@
 -- -----------------------------------------------------------------------------------
 -- Procedimiento 1: Registrar nuevo estudiante con responsable
 -- Cumple con: Registro de estudiantes y responsables con validaciones
--- Transacciones, Inserciones con validaciones cruzadas
 -- -----------------------------------------------------------------------------------
 USE SistemaEducativo;
 GO
@@ -259,7 +258,7 @@ END;
 GO
 
 -- -----------------------------------------------------------------------------------
--- Procedimiento 4: Asignación masiva de docentes a materias (ajustado para tu esquema)
+-- Procedimiento 4: Asignación masiva de docentes a materias 
 -- Cumple con: Asignaciones masivas con validaciones complejas
 -- -----------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_AsignarDocenteMasivo
@@ -358,7 +357,7 @@ GO
 
 
 -- -----------------------------------------------------------------------------------
--- Procedimiento 5: Proceso de promoción de estudiantes (ajustado para tu esquema)
+-- Procedimiento 5: Proceso de promoción de estudiantes 
 -- Cumple con: Procesos complejos con múltiples operaciones condicionales
 -- -----------------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE sp_PromocionarEstudiantes
@@ -425,7 +424,7 @@ BEGIN
                 -- Promover al siguiente nivel
                 DECLARE @nuevo_curso_id INT;
                 
-                -- Obtener un curso del siguiente nivel (podría mejorarse con lógica más compleja)
+                -- Obtener un curso del siguiente nivel 
                 SELECT TOP 1 @nuevo_curso_id = curso_id 
                 FROM Cursos 
                 WHERE CAST(nivel AS INT) = @nivel_actual + 1;

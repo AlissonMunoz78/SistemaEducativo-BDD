@@ -76,27 +76,10 @@ JOIN Cursos c ON mat.curso_id = c.curso_id
 ORDER BY responsable, estudiante;
 GO
 
--- -----------------------------------------------------------------------------------
--- Consulta 5: Histórico de cambios en calificaciones
--- -----------------------------------------------------------------------------------
-SELECT 
-    l.fecha,
-    l.usuario,
-    e.nombres + ' ' + e.apellidos AS estudiante,
-    m.nombre AS materia,
-    l.datos_anteriores,
-    l.datos_nuevos
-FROM Log_Auditoria l
-JOIN Estudiantes e ON l.id_afectado = e.estudiante_id
-JOIN Materias m ON l.datos_nuevos LIKE '%Materia: ' + CAST(m.materia_id AS VARCHAR) + '%'
-WHERE l.tabla_afectada = 'Calificaciones'
-ORDER BY l.fecha DESC;
-GO
-
 
 
 -- -----------------------------------------------------------------------------------
--- Vista 1: Reporte de calificaciones por estudiante (VERSIÓN CORREGIDA)
+-- Vista 1: Reporte de calificaciones por estudiante 
 -- -----------------------------------------------------------------------------------
 CREATE OR ALTER VIEW v_ReporteCalificaciones AS
 SELECT 
