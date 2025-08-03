@@ -58,4 +58,51 @@ BEGIN
 END;
 GO
 
--- ... continuar con la tercera función requerida ...
+-- -----------------------------------------------------------------------------------
+-- Función 3: Determinar el estado académico del estudiante
+-- Cumple con: Estados condicionales basados en lógica SQL
+-- -----------------------------------------------------------------------------------
+CREATE OR ALTER FUNCTION fn_EstadoAcademico(
+    @estudiante_id INT, 
+    @periodo VARCHAR(20)
+)
+RETURNS VARCHAR(50)
+AS
+BEGIN
+    DECLARE @promedio_general DECIMAL(5,2);
+    DECLARE @porcentaje_asistencia DECIMAL(5,2);
+    DECLARE @materias_reprobadas INT;
+    DECLARE @estado VARCHAR(50);
+    
+    -- Calcular promedio general
+    SELECT @promedio_general = AVG(promedio)
+    FROM Calificaciones
+    WHERE estudiante_id = @estudiante_id AND periodo = @periodo;
+    
+    -- Calcular porcentaje de asistencia promedio
+    SELECT @porcentaje_asistencia = AVG(dbo.fn_PorcentajeAsistencia(@estudiante_id, materia_id, @periodo))
+    FROM Calificaciones
+    WHERE estudiante_id = @estudiante_id AND periodo = @periodo;
+    
+    -- Contar materias reprobadas
+    SELECT @materias_reprobadas = COUNT(*)
+    FROM Calificaciones
+    WHERE estudiante_id = @estudiante_id 
+    AND periodo = @periodo
+    AND promedio < 7;
+    
+    -- Determinar estado académico
+    IF @promedio_general >= 8 AND @porcentaje_asistencia >= 90 AND @materias_reprobadas = 0
+        SET @estado = 'Excelente';
+    ELSE IF @promedio_general >= 7 AND @porcentaje_asistencia >= 80 AND @materias_reprobadas <= 1
+        SET @estado = 'Bueno';
+    ELSE IF @promedio_general >= 6 AND @porcentaje_asistencia >= 70
+        SET @estado = 'Regular';
+    ELSE IF @materias_reprobadas >= 3 OR @porcentaje_asistencia < 60
+        SET @estado = 'En riesgo académico';
+    ELSE
+        SET @estado = 'Necesita mejorar';
+    
+    RETURN @estado;
+END;
+GO
